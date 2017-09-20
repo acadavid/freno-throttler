@@ -38,7 +38,7 @@ DEPENDENCIES
   freno-throttler!
   minitest (~> 5.0)
   mocha
-  rake (~> 10.0)
+  rake
   rubocop
 
 BUNDLED WITH
