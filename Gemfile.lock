@@ -8,7 +8,10 @@ GEM
   specs:
     ast (2.3.0)
     freno-client (0.4.0)
+    metaclass (0.0.4)
     minitest (5.10.3)
+    mocha (1.2.1)
+      metaclass (~> 0.0.1)
     parallel (1.12.0)
     parser (2.4.0.0)
       ast (~> 2.2)
@@ -34,6 +37,7 @@ DEPENDENCIES
   freno-client (~> 0)
   freno-throttler!
   minitest (~> 5.0)
+  mocha
   rake (~> 10.0)
   rubocop
 
