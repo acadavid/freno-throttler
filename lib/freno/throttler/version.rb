@@ -1,5 +1,5 @@
 module Freno
-  module Throttler
+  class Throttler
     VERSION = "0.0.1"
   end
 end
