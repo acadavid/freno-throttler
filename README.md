@@ -41,7 +41,7 @@ If you are the current maintainer of this gem:
 1. Create a branch for the release: `git checkout -b cut-release-vx.y.z`
 1. Make sure your local dependencies are up to date: `script/bootstrap`
 1. Ensure that tests are green: `bundle exec rake test`
-1. Bump gem version in `lib/freno/client/version.rb`
+1. Bump gem version in `lib/freno/throttler/version.rb`
 1. Merge a PR to github/freno-throttler containing the changes in the version file
 1. Tag and push: `git tag vx.xx.xx; git push --tags`
 1. Build the gem: `gem build freno-throttler`
