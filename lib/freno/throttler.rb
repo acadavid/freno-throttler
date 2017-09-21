@@ -23,7 +23,7 @@ module Freno
       instrument(:called) do
         waited = 0
 
-        while true do
+        while true do # rubocop:disable Lint/LiteralInCondition
           if all_stores_caught_up?(context)
             instrument(:succeeded, waited: waited)
             return yield
