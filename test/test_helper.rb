@@ -11,4 +11,24 @@ class Freno::Throttler::Test < Minitest::Test
       freno.default_store_type = :mysql
     end
   end
+
+  class MemoryInstrumenter
+    def initialize
+      @events = {}
+    end
+
+    def instrument(event, payload = {})
+      @events[event] ||= []
+      @events[event] <<  payload
+      yield payload if block_given?
+    end
+
+    def events_for(event)
+      @events[event]
+    end
+
+    def count(event)
+      @events[event] ? @events[event].count : 0
+    end
+  end
 end
