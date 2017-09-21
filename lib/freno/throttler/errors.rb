@@ -2,14 +2,19 @@ require "freno/client"
 
 module Freno
   class Throttler
-    # Public: any throttler-related error.
+
+    # Any throttler-related error.
     class Error < Freno::Error; end
 
-    # Public: raised if the throttler has waited too long for replication delay
+    # Raised if the throttler has waited too long for replication delay
     # to catch up.
-    class WaitedTooLong < Error; end
+    class WaitedTooLong < Error
+      def initialize(waited_seconds, max_wait_seconds)
+        super("Waited #{waited_seconds} seconds. Max allowed was #{max_wait_seconds} seconds")
+      end
+    end
 
-    # Public: raised if the freno client errored.
+    # Raised if the freno client errored.
     class ClientError < Error; end
   end
 end
