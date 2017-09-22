@@ -31,4 +31,20 @@ class Freno::Throttler::Test < Minitest::Test
       @events[event] ? @events[event].count : 0
     end
   end
+
+  class SingleFailureAllowedCircuitBreaker
+    def initialize
+      @failed_once = false
+    end
+
+    def allow_request?
+      !@failed_once
+    end
+
+    def success; end
+
+    def failure
+      @failed_once = true
+    end
+  end
 end
