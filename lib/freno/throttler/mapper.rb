@@ -19,7 +19,8 @@ module Freno
       # It works by informing the throttler to check exact same stores that it
       # receives as context, without any translation.
       #
-      # Let's use the following throttler, which uses Mapper::Identity implicitly.
+      # Let's use the following throttler, which uses Mapper::Identity
+      # implicitly.
       #
       # ```ruby
       # throttler = Throttler.new(client: freno_client, app: :my_app)

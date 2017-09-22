@@ -32,7 +32,12 @@ module Freno
   #
   class Throttler
 
-    attr_accessor :client, :app, :mapper, :instrumenter, :wait_seconds, :max_wait_seconds
+    attr_accessor :client,
+                  :app,
+                  :mapper,
+                  :instrumenter,
+                  :wait_seconds,
+                  :max_wait_seconds
 
     # Initializes a new instance of the throttler
     #
@@ -46,9 +51,9 @@ module Freno
     # Also, you can optionally provide the following named arguments:
     #
     #  - `:mapper`: An object that responds to call(context) and returns a
-    #     Enumerable of the store names for which we need to wait for replication
-    #     delay. By default this is the IdentityMapper, which will check the
-    #     stores given as context.
+    #     Enumerable of the store names for which we need to wait for
+    #     replication delay. By default this is the IdentityMapper, which will
+    #     check the stores given as context.
     #
     #     For example, if the `thorttler` object used the default mapper:
     #
@@ -73,7 +78,13 @@ module Freno
     #     seconds the throttler will wait in total for replicas to catch-up
     #     before raising a `WaitedTooLong` error.
     #
-    def initialize(client: nil, app: nil, mapper: Mapper::Identity, instrumenter: Instrumenter::Noop,  wait_seconds: 0.5, max_wait_seconds: 10)
+    def initialize(client: nil,
+                    app: nil,
+                    mapper: Mapper::Identity,
+                    instrumenter: Instrumenter::Noop,
+                    wait_seconds: 0.5,
+                    max_wait_seconds: 10)
+
       @client           = client
       @app              = app
       @mapper           = mapper
@@ -101,11 +112,13 @@ module Freno
     #
     # - "throttler.called" each time this method is called
     # - "throttler.succeeded" when the stores were ok, before yielding the block
-    # - "throttler.waited" when the stores were not ok, after waiting `wait_seconds`
-    # - "throttler.waited_too_long" when the stores were not ok, but the thottler
-    #   already waited at least `max_wait_seconds`, right before raising `WaitedTooLong`
-    # - "throttler.freno_errored" when there was an error with freno, before raising
-    #   `ClientError`.
+    # - "throttler.waited" when the stores were not ok, after waiting
+    #   `wait_seconds`
+    # - "throttler.waited_too_long" when the stores were not ok, but the
+    #   thottler already waited at least `max_wait_seconds`, right before
+    #   raising `WaitedTooLong`
+    # - "throttler.freno_errored" when there was an error with freno, before
+    #   raising `ClientError`.
     #
     def throttle(context = nil)
       instrument(:called) do
@@ -133,7 +146,8 @@ module Freno
     def validate_args
       errors = []
 
-      %i(client app mapper instrumenter wait_seconds max_wait_seconds).each do |argument|
+      %i(client app mapper instrumenter
+        wait_seconds max_wait_seconds).each do |argument|
         errors << "#{argument} must be provided" unless send(argument)
       end
 
