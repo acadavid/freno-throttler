@@ -17,7 +17,7 @@ module Freno
   # Let's use the following throttler, which uses Mapper::Identity implicitly.
   # (see #initialze docs)
   #
-  # ```ruby
+  # ```
   # throttler = Throttler.new(client: freno_client, app: :my_app)
   # data.find_in_batches do |batch|
   #   throttler.throttle([:mysqla, :mysqlb]) do
@@ -50,12 +50,12 @@ module Freno
     #
     # Also, you can optionally provide the following named arguments:
     #
-    #  - `:mapper`: An object that responds to call(context) and returns a
-    #     Enumerable of the store names for which we need to wait for
-    #     replication delay. By default this is the IdentityMapper, which will
+    #  - `:mapper`: An object that responds to `call(context)` and returns a
+    #     `Enumerable` of the store names for which we need to wait for
+    #     replication delay. By default this is the `IdentityMapper`, which will
     #     check the stores given as context.
     #
-    #     For example, if the `thorttler` object used the default mapper:
+    #     For example, if the `throttler` object used the default mapper:
     #
     #      ```
     #      throttler.throttle(:mysqlc) do
@@ -65,7 +65,7 @@ module Freno
     #
     #  - `:instrumenter`: An object that responds to
     #     `instrument(event_name, context = {}, &block)` that can be used to
-    #     add cross-cutting concerns like logging, or stats to the throttler.
+    #     add cross-cutting concerns like logging or stats to the throttler.
     #
     #     By default, the instrumenter is `Intrumenter::Noop`, which does
     #     nothing but yielding the block it receives.
