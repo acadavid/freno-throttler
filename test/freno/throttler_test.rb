@@ -51,6 +51,7 @@ class Freno::ThrottlerTest < Freno::Throttler::Test
     assert_equal 0, throttler.instrumenter.count("throttler.waited")
     assert_equal 0, throttler.instrumenter.count("throttler.waited_too_long")
     assert_equal 0, throttler.instrumenter.count("throttler.freno_errored")
+    assert_equal 0, throttler.instrumenter.count("throttler.circuit_open")
   end
 
   def test_sleeps_when_a_check_fails_and_then_calls_the_block
@@ -79,6 +80,7 @@ class Freno::ThrottlerTest < Freno::Throttler::Test
     assert_equal 1, throttler.instrumenter.count("throttler.waited")
     assert_equal 0, throttler.instrumenter.count("throttler.waited_too_long")
     assert_equal 0, throttler.instrumenter.count("throttler.freno_errored")
+    assert_equal 0, throttler.instrumenter.count("throttler.circuit_open")
   end
 
   def test_raises_waited_too_long_if_freno_checks_failed_consistenly
@@ -112,6 +114,7 @@ class Freno::ThrottlerTest < Freno::Throttler::Test
     assert_equal 3, throttler.instrumenter.count("throttler.waited")
     assert_equal 1, throttler.instrumenter.count("throttler.waited_too_long")
     assert_equal 0, throttler.instrumenter.count("throttler.freno_errored")
+    assert_equal 0, throttler.instrumenter.count("throttler.circuit_open")
   end
 
   def test_raises_a_specific_error_in_case_freno_itself_errored
@@ -144,5 +147,44 @@ class Freno::ThrottlerTest < Freno::Throttler::Test
     assert_equal 0, throttler.instrumenter.count("throttler.waited")
     assert_equal 0, throttler.instrumenter.count("throttler.waited_too_long")
     assert_equal 1, throttler.instrumenter.count("throttler.freno_errored")
+    assert_equal 0, throttler.instrumenter.count("throttler.circuit_open")
+  end
+
+  def test_circuit_breaker
+    block_called = false
+
+    stub = client
+    stub.expects(:check?).raises(Freno::Error)
+
+    throttler = Freno::Throttler.new do |t|
+      t.client = stub
+      t.app = :github
+      t.mapper = ->(context) {[:mysqla]}
+      t.instrumenter = MemoryInstrumenter.new
+      t.circuit_breaker = SingleFailureAllowedCircuitBreaker.new
+    end
+
+    assert_raises(Freno::Throttler::ClientError) do
+      throttler.throttle do
+        block_called = true
+      end
+    end
+
+    refute block_called, "block should not have been called"
+
+    assert_raises(Freno::Throttler::CircuitOpen) do
+      throttler.throttle do
+        block_called = true
+      end
+    end
+
+    refute block_called, "block should not have been called"
+
+    assert_equal 2, throttler.instrumenter.count("throttler.called")
+    assert_equal 0, throttler.instrumenter.count("throttler.succeeded")
+    assert_equal 0, throttler.instrumenter.count("throttler.waited")
+    assert_equal 0, throttler.instrumenter.count("throttler.waited_too_long")
+    assert_equal 1, throttler.instrumenter.count("throttler.freno_errored")
+    assert_equal 1, throttler.instrumenter.count("throttler.circuit_open")
   end
 end

@@ -14,6 +14,9 @@ module Freno
       end
     end
 
+    # Raised if the circuit breaker is open and didn't allow latest request
+    class CircuitOpen < Error; end
+
     # Raised if the freno client errored.
     class ClientError < Error; end
   end
